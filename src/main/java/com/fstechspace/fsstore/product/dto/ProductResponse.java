@@ -1,5 +1,14 @@
 package com.fstechspace.fsstore.product.dto;
 
-public class ProductResponse {
- 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public record ProductResponse(
+    Long id,
+    String name,
+    BigDecimal price,
+    Long version,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
+) {
 }
