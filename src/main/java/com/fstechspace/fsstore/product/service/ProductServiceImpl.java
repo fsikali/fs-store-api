@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service; 
 import org.springframework.transaction.annotation.Transactional; 
+import org.springframework.http.HttpStatus; 
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fstechspace.fsstore.product.dto.ProductRequest;
 import com.fstechspace.fsstore.product.dto.ProductResponse;
@@ -49,7 +51,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Long id) { 
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException(HttpStatus.NOT_FOUND, 
+                "Product not found with id: " + id));
+
         return mapToResponse(product);
     }
 
@@ -58,7 +62,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse updateProduct(Long id, ProductRequest request) {
 
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException(HttpStatus.NOT_FOUND, 
+                "Product not found with id: " + id));
 
         product.updateName(request.getName());
         product.updatePrice(request.getPrice());
@@ -72,8 +77,9 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) { 
         
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id)); 
-                
+                .orElseThrow(() -> new RuntimeException(HttpStatus.NOT_FOUND, 
+                "Product not found with id: " + id));
+
         productRepository.delete(product);
     }
 
