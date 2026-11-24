@@ -1,4 +1,5 @@
-package com.fstechspace.fsstore.product.controller; 
+
+package com.fstechspace.fsstore.product.controller;
 
 import java.util.List;
 
@@ -16,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import com.fstechspace.fsstore.product.dto.ProductRequest;
-import com.fstechspace.fsstore.product.dto.ProductResponse; 
+import com.fstechspace.fsstore.product.dto.ProductResponse;
 import com.fstechspace.fsstore.product.service.ProductService;
 
 @RestController
-@RequestMapping("/api/products") 
+@RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -31,9 +32,11 @@ public class ProductController {
 
     // Create a product
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> createProduct(
+            @Valid @RequestBody ProductRequest request) {
 
         ProductResponse response = productService.createProduct(request);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -47,14 +50,16 @@ public class ProductController {
     // Get one product by ID
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
-      
+
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     // Update a product
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
-        
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductRequest request) {
+
         return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 
@@ -66,5 +71,6 @@ public class ProductController {
 
         return ResponseEntity.noContent().build();
     }
- 
+
 }
+

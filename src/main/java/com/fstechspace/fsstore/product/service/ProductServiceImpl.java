@@ -1,10 +1,11 @@
-package com.fstechspace.fsstore.product.service; 
 
-import java.util.List; 
+package com.fstechspace.fsstore.product.service;
 
-import org.springframework.stereotype.Service; 
-import org.springframework.transaction.annotation.Transactional; 
-import org.springframework.http.HttpStatus; 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fstechspace.fsstore.product.dto.ProductRequest;
@@ -21,22 +22,24 @@ public class ProductServiceImpl implements ProductService {
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    
+
     // Create a product
     @Override
-    public ProductResponse createProduct(ProductRequest request) { 
+    public ProductResponse createProduct(ProductRequest request) {
 
-        Product product = new Product( 
-            request.getName(),
+        Product product = new Product(
+            request.getName().trim(),
             request.getPrice()
         );
-        
-    }
-    
-    // Get all products
-    @Override 
-    @Transactional(readOnly = true)
 
+        Product savedProduct = productRepository.save(product);
+
+        return mapToResponse(savedProduct);
+    }
+
+    // Get all products
+    @Override
+    @Transactional(readOnly = true)
     public List<ProductResponse> getAllProducts() {
 
         return productRepository.findAll()
@@ -44,15 +47,17 @@ public class ProductServiceImpl implements ProductService {
                 .map(this::mapToResponse)
                 .toList();
     }
-    
-    // Get one prdocut by ID
-    @Override 
+
+    // Get one product by ID
+    @Override
     @Transactional(readOnly = true)
-    public ProductResponse getProductById(Long id) { 
+    public ProductResponse getProductById(Long id) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(HttpStatus.NOT_FOUND, 
-                "Product not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Product not found with id: " + id
+                ));
 
         return mapToResponse(product);
     }
@@ -62,23 +67,28 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse updateProduct(Long id, ProductRequest request) {
 
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(HttpStatus.NOT_FOUND, 
-                "Product not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Product not found with id: " + id
+                ));
 
-        product.updateName(request.getName());
-        product.updatePrice(request.getPrice());
+        existingProduct.updateName(request.getName().trim());
+        existingProduct.updatePrice(request.getPrice());
 
-        Product updatedProduct = productRepository.save(product);
+        Product updatedProduct = productRepository.save(existingProduct);
+
         return mapToResponse(updatedProduct);
     }
 
     // Delete a product
     @Override
-    public void deleteProduct(Long id) { 
-        
+    public void deleteProduct(Long id) {
+
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(HttpStatus.NOT_FOUND, 
-                "Product not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Product not found with id: " + id
+                ));
 
         productRepository.delete(product);
     }
@@ -87,12 +97,13 @@ public class ProductServiceImpl implements ProductService {
     private ProductResponse mapToResponse(Product product) {
 
         return new ProductResponse(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getQuantity()
+            product.getId(),
+            product.getName(),
+            product.getPrice(),
+            product.getVersion(),
+            product.getCreatedAt(),
+            product.getUpdatedAt()
         );
     }
- 
+
 }

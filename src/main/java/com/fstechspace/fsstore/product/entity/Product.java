@@ -40,8 +40,11 @@ public class Product {
 
     // 3. Product price
     @NotNull(message = "Product price is required")
-    @DecimalMin(value = "0.00", inclusive = false,
-            message = "Product price must be greater than zero")
+    @DecimalMin(
+        value = "0.00",
+        inclusive = false,
+        message = "Product price must be greater than zero"
+    )
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
@@ -66,7 +69,7 @@ public class Product {
         this.price = price;
     }
 
-    // 8. Lifecycle callbacks for timestamps
+    // 8. Lifecycle callbacks
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
@@ -80,7 +83,6 @@ public class Product {
     }
 
     // 9. Getters
-
     public Long getId() {
         return id;
     }
@@ -106,7 +108,6 @@ public class Product {
     }
 
     // 10. Controlled update methods
-
     public void updateName(String name) {
         this.name = name;
     }
@@ -114,4 +115,5 @@ public class Product {
     public void updatePrice(BigDecimal price) {
         this.price = price;
     }
+
 }

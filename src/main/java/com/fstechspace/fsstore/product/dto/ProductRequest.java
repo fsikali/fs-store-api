@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull; 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class ProductRequest {
@@ -14,8 +14,11 @@ public class ProductRequest {
     private String name;
 
     @NotNull(message = "Product price is required")
-    @DecimalMin(value = "0.00", inclusive = false,
-            message = "Product price must be greater than zero")
+    @DecimalMin(
+        value = "0.00",
+        inclusive = false,
+        message = "Product price must be greater than zero"
+    )
     private BigDecimal price;
 
     // Getters and Setters
@@ -29,10 +32,10 @@ public class ProductRequest {
 
     public BigDecimal getPrice() {
         return price;
-    } 
+    }
 
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
- 
+
 }
